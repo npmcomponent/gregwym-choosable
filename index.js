@@ -2,40 +2,19 @@
  * Module dependencies.
  */
 
-var SelectionRect = require('selection-rect');
 var Emitter = require('emitter');
 var classes = require('classes');
 var events = require('events');
 var query = require('query');
-var position = require('position');
 
 /**
- * Expose `Selectable`.
+ * Expose `Choosable`.
  */
 
-module.exports = Selectable;
+module.exports = Choosable;
 
 /**
- * Check if `els` are within the given `rect`.
- *
- * TODO: separate component
- */
-
-function withinRect(els, rect) {
-  var within = [];
-
-  for (var i = 0; i < els.length; i++) {
-    var r = position(els[i]);
-    if (rect.intersects(r)) {
-      within.push(els[i]);
-    }
-  }
-
-  return within;
-}
-
-/**
- * Initialize a new `Selectable` with `selector`
+ * Initialize a new `Choosable` with `selector`
  * and optional `el` defaulting to the document
  * element.
  *
@@ -44,74 +23,30 @@ function withinRect(els, rect) {
  * @api public
  */
 
-function Selectable(selector, el) {
-  if (!(this instanceof Selectable)) return new Selectable(selector, el);
+function Choosable(selector, el) {
+  if (!(this instanceof Choosable)) return new Choosable(selector, el);
   this.el = el || document.documentElement;
   this.selector = selector;
   this.events = events(this.el, this);
-  this.rect = new SelectionRect;
-  this.events.bind('mousedown');
-  this.events.bind('mousemove');
-  this.events.bind('mouseup');
+  this.events.bind('click');
 }
 
 /**
  * Mixin emitter.
  */
 
-Emitter(Selectable.prototype);
+Emitter(Choosable.prototype);
 
 /**
- * Handle mousedown.
+ * Handle click.
  */
 
-Selectable.prototype.onmousedown = function(e){
-  this.down = e;
-  this.el.appendChild(this.rect.el);
-  this.rect.moveTo(e.pageX, e.pageY);
-};
-
-/**
- * Handle mousemove.
- */
-
-Selectable.prototype.onmousemove = function(e){
-  if (!this.down) return;
-  this.rect.to(e.pageX, e.pageY);
-
+Choosable.prototype.onclick = function(e) {
   var els = this.els();
-  this.selectover(els, withinRect(els, this.rect));
-};
-
-/**
- * Handle mouseup.
- */
-
-Selectable.prototype.onmouseup = function(e){
-  this.down = null;
-
-  var els = this.els();
-  this.deselect(els);
-  this.select(withinRect(els, this.rect));
-
-  this.rect.size(0, 0);
-  var el = this.rect.el;
-  if (el.parentNode) el.parentNode.removeChild(el)
-};
-
-/**
- * Apply "selectover" classes.
- *
- * TODO: cache ClassLists
- */
-
-Selectable.prototype.selectover = function(a, b){
-  for (var i = 0; i < a.length; i++) {
-    classes(a[i]).remove('selectover');
-  }
-
-  for (var i = 0; i < b.length; i++) {
-    classes(b[i]).add('selectover');
+  var el = e.toElement;
+  this.deselectAll(els);
+  for (var i = 0; i < els.length; i++) {
+    if (els[i] === el) { return this.select(el); }
   }
 };
 
@@ -121,48 +56,50 @@ Selectable.prototype.selectover = function(a, b){
  * TODO: cache ClassLists
  */
 
-Selectable.prototype.select = function(els){
-  for (var i = 0; i < els.length; i++) {
-    classes(els[i])
-      .add('selected')
-      .remove('selectover');
-  }
+Choosable.prototype.select = function(el){
+  classes(el).add('selected').remove('selectover');
 
-  this.change(els);
+  this.change(el);
 };
 
 /**
  * Remove "selected" classes.
  */
 
-Selectable.prototype.deselect = function(els){
+Choosable.prototype.deselect = function(el){
+  classes(el).remove('selected');
+};
+
+/**
+ * Remove all elements' "selected" classes.
+ */
+
+Choosable.prototype.deselectAll = function(els){
   for (var i = 0; i < els.length; i++) {
     classes(els[i]).remove('selected');
   }
-}
+};
 
 /**
  * Toggle "selected".
  */
 
-Selectable.prototype.toggle = function(els){
-  for(var i = 0; i < els.length; i++) {
-    if (classes(els[i]).has('selected')) {
-      this.deselect([els[i]]);
-    } else {
-      this.select([els[i]]);
-    }
+Choosable.prototype.toggle = function(el){
+  if (classes(el).has('selected')) {
+    this.deselect(el);
+  } else {
+    this.select(el);
   }
-}
+};
 
 /**
  * Emit "change".
  */
 
-Selectable.prototype.change = function(els){
+Choosable.prototype.change = function(el){
   var e = {};
   e.elements = this.els();
-  e.selected = els;
+  e.selected = el;
   this.emit('change', e);
 };
 
@@ -170,6 +107,6 @@ Selectable.prototype.change = function(els){
  * Get selectable elements.
  */
 
-Selectable.prototype.els = function(){
+Choosable.prototype.els = function(){
   return query.all(this.selector, this.el);
 };

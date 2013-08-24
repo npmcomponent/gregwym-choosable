@@ -1,13 +1,11 @@
 
-# selectable
+# choosable
 
-  Selectable DOM elements.
-
-  ![dom element selection js component](http://i.cloudup.com/iZqb9fzgccE.png)
+  Choosable DOM elements. Forked and modified from [component/selectable](https://github.com/component/selectable)
 
 ## Installation
 
-    $ component install component/selectable
+    $ component install gregwym/choosable
 
 ## Example
 
@@ -20,30 +18,28 @@
 </ul>
 
 <script>
-  var selectable = require('selectable');
-  var selection = selectable('#pets > li');
+  var Choosable = require('choosable');
+  var choosable = Choosable('#pets > li');
 
-  selection.on('change', function(e){
-    for (var i = 0; i < e.selected.length; i++) {
-      console.log(e.selected[i].getAttribute('data-name'));
-    }
+  choosable.on('change', function(e){
+    console.log(e.selected.getAttribute('data-name'));
   });
 </script>
 ```
 
 ## API
 
-### Selectable(selector, el)
+### Choosable(selector, el)
 
-  Make elements with the given `selector` selectable, with optional context `el`.
+  Make elements with the given `selector` choosable, with optional context `el`.
 
-### Selectable#select(els)
+### Choosable#select(el)
 
-  Add the given `els` to the selection.
+  Add the given `el` to the selection.
 
-### Selectable#deselect(els)
+### Choosable#deselect(el)
 
-  Remove the given `els` from the selection.
+  Remove the given `el` from the selection.
 
 ## License
 

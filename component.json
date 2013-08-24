@@ -1,16 +1,14 @@
 {
-  "name": "selectable",
-  "repo": "component/selectable",
-  "description": "Selectable DOM elements",
+  "name": "choosable",
+  "repo": "gregwym/choosable",
+  "description": "Choosable DOM elements",
   "version": "0.1.0",
-  "keywords": ["select", "selectable", "selection"],
+  "keywords": ["choose", "choosable", "switch", "choice", "option"],
   "dependencies": {
     "component/emitter": "*",
-    "component/query": "0.0.1",
-    "component/classes": "1.1.0",
-    "component/events": "1.0.2",
-    "component/selection-rect": "0.1.0",
-    "jkroso/position": "0.1.0"
+    "component/query": "*",
+    "component/classes": "*",
+    "component/events": "*"
   },
   "development": {},
   "license": "MIT",
