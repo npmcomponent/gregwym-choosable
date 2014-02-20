@@ -1,0 +1,20 @@
+{
+  "name": "gregwym-choosable",
+  "description": "Choosable DOM elements",
+  "version": "0.1.0",
+  "keywords": [
+    "choose",
+    "choosable",
+    "switch",
+    "choice",
+    "option"
+  ],
+  "main": "index.js",
+  "dependencies": {
+    "component-emitter": "git://github.com/npmcomponent/component-emitter.git",
+    "component-query": "git://github.com/npmcomponent/component-query.git",
+    "component-classes": "git://github.com/npmcomponent/component-classes.git",
+    "component-events": "git://github.com/npmcomponent/component-events.git"
+  },
+  "license": "MIT"
+}
